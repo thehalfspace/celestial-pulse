@@ -2,6 +2,9 @@
 # Celestial Pulse
 Do not browse this repo!
 
+Site link: https://celestial-pulse.vercel.app/
+
+#### Log reps: 4x8, or 1x(7,4,3,2) for uneven reps
 
 ---
 
