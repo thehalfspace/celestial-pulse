@@ -4,3 +4,4 @@ export { StrengthCard } from './StrengthCard';
 export { SkillCard } from './SkillCard';
 export { CardioSection } from './CardioSection';
 export { XPAndLogs } from './XPAndLogs';
+export { UserSelector } from './UserSelector';

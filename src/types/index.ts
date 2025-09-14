@@ -71,3 +71,6 @@ export type ProgressState = {
   logs: WorkoutLog[];
   xp: number;
 };
+
+// Re-export user types
+export type { User, UserSummary } from './user';

@@ -1,14 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Mode, MovementKey, SkillKey, WorkoutLog } from './types';
 import { MOVEMENTS, SKILLS } from './data/workouts';
 import { uid, calcStrengthXP, calcSkillXP, calcCardioXP } from './utils';
 import { useWorkoutState } from './hooks/useWorkoutState';
 import { useWeeklyStats } from './hooks/useWeeklyStats';
+import { useUserManager } from './hooks/useUserManager';
 import { Segmented } from './components/ui';
 import { Header, WeeklyOverview, StrengthCard, SkillCard, CardioSection, XPAndLogs } from './components';
+import { UserSelector } from './components/UserSelector';
 
 export default function CCApp() {
-  const { state, setState, exportData, importData, resetAll } = useWorkoutState();
+  const {
+    currentUser,
+    users,
+    isLoading,
+    error,
+    createUser,
+    loginUser,
+    updateUserProgress,
+    logoutUser,
+    deleteUser,
+    clearError,
+  } = useUserManager();
+
+  const { state, setState, exportData, importData, resetAll } = useWorkoutState(
+    currentUser,
+    updateUserProgress
+  );
   const { weeklyStrengthCounts, weeklyCardioMinutes } = useWeeklyStats(state);
 
   const [mode, setMode] = useState<Mode>("strength");
@@ -91,9 +109,30 @@ export default function CCApp() {
     setNotes("");
   }
 
+  // Show user selector if no user is logged in
+  if (!currentUser) {
+    return (
+      <UserSelector
+        users={users}
+        isLoading={isLoading}
+        error={error}
+        onCreateUser={createUser}
+        onLoginUser={loginUser}
+        onDeleteUser={deleteUser}
+        onClearError={clearError}
+      />
+    );
+  }
+
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto text-slate-100">
-      <Header onExport={exportData} onImport={importData} onReset={resetAll} />
+      <Header
+        currentUser={currentUser}
+        onExport={exportData}
+        onImport={importData}
+        onReset={resetAll}
+        onLogout={logoutUser}
+      />
 
       <WeeklyOverview state={state} />
 
@@ -161,7 +200,7 @@ export default function CCApp() {
       <XPAndLogs state={state} />
 
       <footer className="mt-8 text-center text-xs text-slate-400">
-        Data is stored locally in your browser. Add to iPhone Home Screen via Safari to use like an app.
+        Your workout data is saved automatically to your local database. Add to iPhone Home Screen via Safari to use like an app.
       </footer>
     </div>
   );
